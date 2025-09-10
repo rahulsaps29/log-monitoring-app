@@ -1,5 +1,14 @@
 import type { CompletedTask, UnmatchedEvent } from "./types";
 
+/**
+ * Parses a log string and extracts completed tasks, unmatched start events, and unmatched end events.
+ *
+ * @param log - The raw log string to parse, with each line representing a log event.
+ * @returns An object containing:
+ * - `completedTasks`: An array of tasks with matched START and END events, including their durations (in minutes).
+ * - `unmatchedStartEvents`: An array of START events that do not have a corresponding END event.
+ * - `unmatchedEndEvents`: An array of END events that do not have a corresponding START event.
+ */
 export const parseLogs = (
   log: string
 ): {
@@ -7,6 +16,9 @@ export const parseLogs = (
   unmatchedStartEvents: UnmatchedEvent[];
   unmatchedEndEvents: UnmatchedEvent[];
 } => {
+  // return if log is empty
+  if (log.trim().length === 0) return { completedTasks: [], unmatchedStartEvents: [], unmatchedEndEvents: [] };
+
   const lines = log.trim().split("\n");
   const startEvents = new Map<string, UnmatchedEvent>();
   const completedTasks: CompletedTask[] = [];
@@ -53,14 +65,3 @@ export const parseLogs = (
   return { completedTasks, unmatchedStartEvents, unmatchedEndEvents };
 };
 
-export const formatDuration = (durationInMin: number): string => {
-  const minutes = Math.floor(durationInMin)
-  const seconds = Math.round((durationInMin - minutes) * 60)
-  if (minutes > 0) {
-    return `${minutes} min${minutes > 1 ? "s" : ""}${
-      seconds > 0 ? ` and ${seconds} sec${seconds > 1 ? "s" : ""}` : ""
-    }`;
-  } else {
-    return `${seconds} sec${seconds > 1 ? "s" : ""}`;
-  }
-}
