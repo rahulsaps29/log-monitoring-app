@@ -6,23 +6,20 @@ import type { CompletedTask, UnmatchedEvent } from "./types";
  * @param log - The raw log string to parse, with each line representing a log event.
  * @returns An object containing:
  * - `completedTasks`: An array of tasks with matched START and END events, including their durations (in minutes).
- * - `unmatchedStartEvents`: An array of START events that do not have a corresponding END event.
- * - `unmatchedEndEvents`: An array of END events that do not have a corresponding START event.
+ * - `unmatchedEvents`: An array of START events that do not have a corresponding END event.
  */
 export const parseLogs = (
   log: string
 ): {
   completedTasks: CompletedTask[];
-  unmatchedStartEvents: UnmatchedEvent[];
-  unmatchedEndEvents: UnmatchedEvent[];
+  unmatchedEvents: UnmatchedEvent[];
 } => {
   // return if log is empty
-  if (log.trim().length === 0) return { completedTasks: [], unmatchedStartEvents: [], unmatchedEndEvents: [] };
+  if (log.trim().length === 0) return { completedTasks: [], unmatchedEvents: []};
 
   const lines = log.trim().split("\n");
   const startEvents = new Map<string, UnmatchedEvent>();
   const completedTasks: CompletedTask[] = [];
-  const unmatchedEndEvents: UnmatchedEvent[] = [];
 
   lines.forEach((line) => {
     const [timestampStr, taskName, eventType, pid] = line.split(",");
@@ -47,21 +44,15 @@ export const parseLogs = (
           duration: durationInMinutes,
         });
         startEvents.delete(pid.trim());
-      } else {
-        unmatchedEndEvents.push({
-          taskName: trimmedTaskName,
-          timestamp: date,
-          pid: pid.trim(),
-        });
       }
     }
   });
 
-  const unmatchedStartEvents: UnmatchedEvent[] = Array.from(
+  const unmatchedEvents: UnmatchedEvent[] = Array.from(
     startEvents.values()
   );
 
   completedTasks.sort((a, b) => a.duration - b.duration);
-  return { completedTasks, unmatchedStartEvents, unmatchedEndEvents };
+  return { completedTasks, unmatchedEvents };
 };
 

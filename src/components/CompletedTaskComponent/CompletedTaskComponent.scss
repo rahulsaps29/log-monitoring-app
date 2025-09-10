@@ -1,0 +1,44 @@
+$green-success-text: #166534;
+$red-danger-bg: #fef2f2;
+$orange-warning-bg: #ffe7baf3;
+$green-success-bg: #f0fdf4;
+$green-success-border: #dcfce7;
+$green-success-text: #166534;
+
+
+.task-card {
+  background-color: $green-success-bg;
+  border-radius: 0.5rem;
+  padding: 0.05rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+  border: 1px solid $green-success-border;
+}
+
+.task-name {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: $green-success-text;
+}
+
+.task-pid {
+  font-size: 0.5rem;
+  font-weight: 600;
+  color: #26ad58;
+}
+
+.task-duration {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #26ad58;
+}
+
+.duration-value {
+  font-weight: 600;
+}
+
+.report-error {
+  background-color: $red-danger-bg;
+}
+.report-warning {
+  background-color: $orange-warning-bg;
+}

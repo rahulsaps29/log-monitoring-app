@@ -8,9 +8,6 @@ $green-success-text: #166534;
 $red-danger-bg: #fef2f2;
 $red-danger-border: #fecaca;
 $red-danger-text: #991b1b;
-$orange-warning-bg: #ffe7baf3;
-$orange-warning-border: #f59e0b;
-$orange-warning-text: #b45309;
 
 .log-parser-container {
   min-height: 40vh;
@@ -65,42 +62,6 @@ $orange-warning-text: #b45309;
       @media (min-width: 768px) {
         grid-template-columns: repeat(6, minmax(0, 1fr));
       }
-    }
-
-    .task-card {
-      background-color: $green-success-bg;
-      border-radius: 0.5rem;
-      padding: 0.05rem;
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
-      border: 1px solid $green-success-border;
-
-      .task-name {
-        font-size: 0.6rem;
-        font-weight: 600;
-        color: $green-success-text;
-      }
-
-      .task-pid {
-        font-size: 0.5rem;
-        font-weight: 600;
-        color: #26ad58;
-      }
-
-      .task-duration {
-        font-size: 0.6rem;
-        font-weight: 600;
-        color: #26ad58;
-      }
-
-      .duration-value {
-        font-weight: 600;
-      }
-    }
-    .report-error {
-      background-color: $red-danger-bg;
-    }
-    .report-warning {
-      background-color: $orange-warning-bg;
     }
 
     .unmatched-section {

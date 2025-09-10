@@ -2,21 +2,19 @@ import { useEffect, useState } from "react";
 import { parseLogs } from "../utils/logParser";
 import type { CompletedTask, UnmatchedEvent } from "../utils/types";
 import "./LogMonitorComponent.scss";
-import { addWarningErrorClass, formatDuration } from "../utils/utils";
+import CompletedTaskComponent from "./CompletedTaskComponent/CompletedTaskComponent";
 
 const LogMonitorComponent = () => {
   const [completedTasks, setCompletedTasks] = useState<CompletedTask[]>([]);
-  const [unmatchedStartEvents, setUnmatchedStartEvents] = useState<UnmatchedEvent[]>([]);
-  const [unmatchedEndEvents, setUnmatchedEndEvents] = useState<UnmatchedEvent[]>([]);
+  const [unmatchedEvents, setUnmatchedEvents] = useState<UnmatchedEvent[]>([]);
 
   useEffect(() => {
     const readLogFile = async () => {
       const response = await fetch("/logs.log");
       const resText = await response.text();
-      const { completedTasks, unmatchedStartEvents, unmatchedEndEvents } = parseLogs(resText);
+      const { completedTasks, unmatchedEvents } = parseLogs(resText);
       setCompletedTasks(completedTasks);
-      setUnmatchedStartEvents(unmatchedStartEvents);
-      setUnmatchedEndEvents(unmatchedEndEvents);
+      setUnmatchedEvents(unmatchedEvents);
     };
 
     readLogFile();
@@ -33,27 +31,7 @@ const LogMonitorComponent = () => {
             {completedTasks.length > 0 ? (
               <div className="tasks-grid">
                 {completedTasks.map((task, index) => (
-                  <div
-                    key={index}
-                    className={`task-card ${addWarningErrorClass(
-                      task.duration
-                    )}`}
-                  >
-                    <p className={`task-name`}>Task: {task.taskName}</p>
-                    <p
-                      className={`task-pid ${addWarningErrorClass(
-                        task.duration
-                      )}`}
-                    >
-                      PID: {task.pid}
-                    </p>
-                    <p className="task-duration">
-                      Duration:{" "}
-                      <span className="duration-value">
-                        {formatDuration(task.duration)}
-                      </span>
-                    </p>
-                  </div>
+                  <CompletedTaskComponent key={index} task={task} />
                 ))}
               </div>
             ) : (
@@ -64,37 +42,17 @@ const LogMonitorComponent = () => {
           {/* Unmatched Events Section */}
           <div>
             <h2 className="section-title">Unmatched Events</h2>
-            {unmatchedStartEvents.length > 0 ||
-            unmatchedEndEvents.length > 0 ? (
+            {unmatchedEvents.length > 0 ? (
               <div className="unmatched-section">
                 {/* Unmatched Start Events */}
                 <div>
-                  <h3 className="unmatched-title">
-                    Unmatched Start Events (Still running)
-                  </h3>
+                  <h3 className="unmatched-title">Unmatched Start Events (Still running)</h3>
                   <ul className="unmatched-list">
-                    {unmatchedStartEvents.map((event, index) => (
+                    {unmatchedEvents.map((event, index) => (
                       <li key={`start-${index}`} className="unmatched-item">
                         Task:{" "}
                         <span className="font-semibold">{event.taskName}</span>{" "}
                         (PID: {event.pid}) started at{" "}
-                        {event.timestamp.toLocaleTimeString()}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Unmatched End Events */}
-                <div>
-                  <h3 className="unmatched-title">
-                    Unmatched End Events (Missing start)
-                  </h3>
-                  <ul className="unmatched-list">
-                    {unmatchedEndEvents.map((event, index) => (
-                      <li key={`end-${index}`} className="unmatched-item">
-                        Task:{" "}
-                        <span className="font-semibold">{event.taskName}</span>{" "}
-                        (PID: {event.pid}) ended at{" "}
                         {event.timestamp.toLocaleTimeString()}
                       </li>
                     ))}
