@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { formatDuration, parseLogs } from "../utils/logParser";
+import { parseLogs } from "../utils/logParser";
 import type { CompletedTask, UnmatchedEvent } from "../utils/types";
 import "./LogMonitorComponent.scss";
+import { addWarningErrorClass, formatDuration } from "../utils/utils";
 
 const LogMonitorComponent = () => {
   const [completedTasks, setCompletedTasks] = useState<CompletedTask[]>([]);
@@ -12,8 +13,7 @@ const LogMonitorComponent = () => {
     const readLogFile = async () => {
       const response = await fetch("/logs.log");
       const resText = await response.text();
-      const { completedTasks, unmatchedStartEvents, unmatchedEndEvents } =
-        parseLogs(resText);
+      const { completedTasks, unmatchedStartEvents, unmatchedEndEvents } = parseLogs(resText);
       setCompletedTasks(completedTasks);
       setUnmatchedStartEvents(unmatchedStartEvents);
       setUnmatchedEndEvents(unmatchedEndEvents);
@@ -22,19 +22,10 @@ const LogMonitorComponent = () => {
     readLogFile();
   }, []);
 
-  const addWarningErrorClass = (duration: number) => {
-    if (duration > 5 && duration < 10) {
-      return "report-warning";
-    } else if (duration >= 10) {
-      return "report-error";
-    }
-  };
-
   return (
     <div className="log-parser-container">
       <div className="log-parser-card">
         <h1 className="dashboard-title">Log Parser Dashboard</h1>
-
         <div className="content-sections">
           {/* Completed Tasks Section */}
           <div className="completed-tasks-section">
